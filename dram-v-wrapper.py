@@ -87,7 +87,7 @@ def main(args):
 def run_job(group_tuple):
     job_str=f'DRAM-v.py annotate -i {group_tuple[2]} -v {args.in_tab_file} -o {group_tuple[1]}/dram-v-output --skip_trnascan --threads {args.threads_per_process} --min_contig_size {args.min_contig_size}'
     stdout, stderr = execute(job_str)
-    print(f"----DRAMv - stdout----\n{stdout}\n----DRAMv - stderr----\n{stderr}\n")
+    print(f"----DRAMv - stdout----\n{stdout.decode('utf8')}\n----DRAMv - stderr----\n{stderr.decode('utf8')}\n")
     df = pd.read_csv(f'{group_tuple[1]}/dram-v-output/annotations.tsv', sep='\t')
     return df
 

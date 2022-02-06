@@ -36,14 +36,36 @@ def parse_args():
     parser = argparse.ArgumentParser()
 
     # Positional mandatory arguments
-    parser.add_argument("--in_fasta_file", help="input_fasta", type=str, default=snakemake.input.fasta)
-    parser.add_argument("--in_tab_file", help="input_table", type=str, default=snakemake.input.viral_affi)
-    parser.add_argument("--min_contig_size", help="minimum contig size", type=int, default=snakemake.params.cutoff)
-    parser.add_argument('--outfile', help='output_folder', type=str, default=snakemake.output.tsv)
-    parser.add_argument('--tmp_dir', help='tmp folder', type=str, default='tmp')
-    parser.add_argument('--contigs_per_file', help='The number of contigs in each slice', type=int, default=1)
-    parser.add_argument('--job_number', type=int, default=snakemake.threads)
-    parser.add_argument('--threads_per_process', type=int, default=16)    
+    parser.add_argument("--in_fasta_file",
+                        help="input_fasta", 
+                        type=str, 
+                        default=snakemake.input.fasta)
+    parser.add_argument("--in_tab_file", 
+                        help="input_table", 
+                        type=str, 
+                        default=snakemake.input.viral_affi)
+    parser.add_argument("--min_contig_size", 
+                        help="minimum contig size", 
+                        type=int, 
+                        default=snakemake.params.cutoff)
+    parser.add_argument('--outfile', 
+                        help='output_folder', 
+                        type=str, 
+                        default=snakemake.output.tsv)
+    parser.add_argument('--tmp_dir', 
+                        help='tmp folder', 
+                        type=str, 
+                        default=os.path.join(snakemake.params.output_dir, "tmp"))
+    parser.add_argument('--contigs_per_file', 
+                        help='The number of contigs in each slice', 
+                        type=int, 
+                        default=1)
+    parser.add_argument('--job_number', 
+                        type=int, 
+                        default=snakemake.threads)
+    parser.add_argument('--threads_per_process', 
+                        type=int, 
+                        default=16)    
     # Parse arguments
     args = parser.parse_args()
 

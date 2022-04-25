@@ -6,6 +6,7 @@ import io
 import multiprocessing as mp
 import shutil
 import pandas as pd
+import glob
 
 # Put error and out into the log file
 sys.stderr = sys.stdout = open(snakemake.log[0], "w")
@@ -52,6 +53,10 @@ def parse_args():
                         help='output_folder', 
                         type=str, 
                         default=snakemake.output.tsv)
+    parser.add_argument('--out_faa', 
+                        help='output_folder', 
+                        type=str, 
+                        default=snakemake.output.faa)
     parser.add_argument('--tmp_dir', 
                         help='tmp folder', 
                         type=str, 
@@ -100,9 +105,26 @@ def main(args):
     pool.close()
 
     df = pd.concat(results)
-    df.to_csv(args.outfile, sep='\t', index=False)
+    df.to_csv(args.outfile, sep='\t')
+
+    merge_fasta(args.tmp_dir, args.out_faa)
+
     print(f'{bcolors.OKBLUE} ------ DONE! ----------- {bcolors.ENDC}')
-    shutil.rmtree(args.tmp_dir)
+    # shutil.rmtree(args.tmp_dir)
+
+###########################################################
+
+def merge_fasta(tmp_dir, out_fasta):
+    all_prot = glob.glob(tmp_dir, "*", "dram-v-output", "*.faa")
+
+    with open(out_fasta, "wt") as w_file:
+        for faa_file in all_prot:
+            parser = SeqIO.parse(faa_file, "fasta")
+            for prot in parser:
+                prot.name = prot.description = ''
+                SeqIO.write(prot, w_file, "fasta")
+
+    return
 
 ###########################################################
 
@@ -111,7 +133,7 @@ def run_job(group_tuple):
     stdout, stderr = execute(job_str)
     print(f"----DRAMv - stdout----\n{stdout.decode('utf8')}\n----DRAMv - stderr----\n{stderr.decode('utf8')}\n")
     if os.path.isfile(f'{group_tuple[1]}/dram-v-output/annotations.tsv'):
-        df = pd.read_csv(f'{group_tuple[1]}/dram-v-output/annotations.tsv', sep='\t')
+        df = pd.read_csv(f'{group_tuple[1]}/dram-v-output/annotations.tsv', sep='\t', index_col=0)
     else:
         df = pd.DataFrame()
     return df

@@ -115,7 +115,7 @@ def main(args):
 ###########################################################
 
 def merge_fasta(tmp_dir, out_fasta):
-    all_prot = glob.glob(tmp_dir, "*", "dram-v-output", "*.faa")
+    all_prot = glob.glob(os.path.join(tmp_dir, "*", "dram-v-output", "*.faa"))
 
     with open(out_fasta, "wt") as w_file:
         for faa_file in all_prot:
